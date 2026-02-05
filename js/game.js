@@ -66,11 +66,11 @@ enemy.style.top  = ey + "px";
 const keys = {};
 
 window.addEventListener("keydown", e => {
-  keys[e.key.toLowerCase()] = true;
+  keys[e.code] = true;
 });
 
 window.addEventListener("keyup", e => {
-  keys[e.key.toLowerCase()] = false;
+  keys[e.code] = false;
 });
 
 // ========================
@@ -80,10 +80,10 @@ function updatePlayer() {
   let vx = 0;
   let vy = 0;
 
-  if (keys["w"]) vy -= 1;
-  if (keys["s"]) vy += 1;
-  if (keys["a"]) vx -= 1;
-  if (keys["d"]) vx += 1;
+if (keys["KeyW"]) vy -= 1;
+if (keys["KeyS"]) vy += 1;
+if (keys["KeyA"]) vx -= 1;
+if (keys["KeyD"]) vx += 1;
 
   const len = Math.hypot(vx, vy);
   if (len !== 0) {
