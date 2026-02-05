@@ -55,13 +55,13 @@ gameOverScreen.style.left = "0";
 gameOverScreen.style.width = "100%";
 gameOverScreen.style.height = "100%";
 gameOverScreen.style.background = "rgba(0,0,0,0.7)";
-gameOverScreen.style.display = "none";
+gameOverScreen.style.display = "none"; // ← 初期は非表示
 gameOverScreen.style.justifyContent = "center";
 gameOverScreen.style.alignItems = "center";
-gameOverScreen.style.flexDirection = "column"; // これでGIF中央に
+gameOverScreen.style.flexDirection = "column";
 gameOverScreen.style.zIndex = "10";
 gameOverScreen.style.textAlign = "center";
-gameOverScreen.style.display = "flex"; // flexを有効化
+gameOverScreen.style.display = "flex";
 
 const gameOverImg = document.createElement("img");
 gameOverImg.src = "assets/images/defeat.gif"; // GIFファイルパス
@@ -238,7 +238,7 @@ function gameOver() {
   running = false;
   gameAudio.pause();
   gameAudio.currentTime = 0;
-  gameOverScreen.style.display = "flex";
+  gameOverScreen.style.display = "flex"; // ← ここでGIFを表示
 }
 
 // ========================
