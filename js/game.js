@@ -6,19 +6,21 @@ const player = document.getElementById("player");
 player.classList.add("debug");
 
 // ========================
-// タイマー設定（先に定義）
+// タイマー設定
 // ========================
 const TIME_LIMIT = 30; // 秒数変更可能
 let timeLeft = TIME_LIMIT;
 let lastTimeStamp = performance.now();
 
+// ========================
 // BGM
+// ========================
 const gameAudio = new Audio("assets/audio/game.wav");
 gameAudio.loop = true;
 gameAudio.volume = 0.6;
 
 // ========================
-// 敵をJSで生成
+// 敵を生成
 // ========================
 const enemy = document.createElement("div");
 enemy.id = "enemy";
@@ -33,6 +35,26 @@ gameArea.appendChild(enemy);
 // タイマー表示
 // ========================
 const timer = document.createElement("div");
+
+// ========================
+// 敗北演出UI
+// ========================
+const gameOverScreen = document.createElement("div");
+gameOverScreen.id = "game-over";
+gameOverScreen.style.position = "absolute";
+gameOverScreen.style.inset = "0";
+gameOverScreen.style.background = "rgba(0,0,0,0.7)";
+gameOverScreen.style.display = "none";
+gameOverScreen.style.alignItems = "center";
+gameOverScreen.style.justifyContent = "center";
+gameOverScreen.style.color = "white";
+gameOverScreen.style.fontSize = "48px";
+gameOverScreen.style.fontFamily = "monospace";
+gameOverScreen.style.zIndex = "10";
+gameOverScreen.textContent = "GAME OVER";
+
+gameArea.appendChild(gameOverScreen);
+
 timer.id = "timer";
 timer.style.position = "absolute";
 timer.style.top = "10px";
@@ -43,30 +65,6 @@ timer.style.fontSize = "24px";
 timer.style.fontFamily = "monospace";
 timer.textContent = `TIME: ${timeLeft}`;
 gameArea.appendChild(timer);
-
-// ========================
-// 敗北演出UI（GIF対応）
-// ========================
-const gameOverScreen = document.createElement("div");
-gameOverScreen.id = "game-over";
-gameOverScreen.style.position = "absolute";
-gameOverScreen.style.top = "0";
-gameOverScreen.style.left = "0";
-gameOverScreen.style.width = "100%";
-gameOverScreen.style.height = "100%";
-gameOverScreen.style.background = "rgba(0,0,0,0.7)";
-gameOverScreen.style.display = "none";
-gameOverScreen.style.alignItems = "center";
-gameOverScreen.style.justifyContent = "center";
-gameOverScreen.style.zIndex = "10";
-
-const gameOverImg = document.createElement("img");
-gameOverImg.src = "assets/images/defeat.gif"; // GIFファイルパス
-gameOverImg.style.maxWidth = "80%";
-gameOverImg.style.maxHeight = "80%";
-gameOverScreen.appendChild(gameOverImg);
-
-gameArea.appendChild(gameOverScreen);
 
 // ========================
 // プレイヤー設定
@@ -94,16 +92,56 @@ enemy.style.top  = ey + "px";
 // ========================
 const keys = {};
 
-window.addEventListener("keydown", e => {
+function startAudio() {
   if (gameAudio.paused) {
     gameAudio.play().catch(() => {});
   }
+}
+
+window.addEventListener("keydown", e => {
+  startAudio();
   keys[e.code] = true;
 });
 
 window.addEventListener("keyup", e => {
   keys[e.code] = false;
 });
+
+// ========================
+// スマホ操作（タッチ）
+// ========================
+let touchStartX = 0;
+let touchStartY = 0;
+
+gameArea.addEventListener("touchstart", e => {
+  startAudio();
+  const touch = e.touches[0];
+  touchStartX = touch.clientX;
+  touchStartY = touch.clientY;
+  e.preventDefault();
+}, { passive: false });
+
+gameArea.addEventListener("touchmove", e => {
+  const touch = e.touches[0];
+  const dx = touch.clientX - touchStartX;
+  const dy = touch.clientY - touchStartY;
+
+  const threshold = 20; // ピクセル
+  keys["KeyW"] = dy < -threshold;
+  keys["KeyS"] = dy > threshold;
+  keys["KeyA"] = dx < -threshold;
+  keys["KeyD"] = dx > threshold;
+
+  e.preventDefault();
+}, { passive: false });
+
+gameArea.addEventListener("touchend", e => {
+  keys["KeyW"] = false;
+  keys["KeyS"] = false;
+  keys["KeyA"] = false;
+  keys["KeyD"] = false;
+  e.preventDefault();
+}, { passive: false });
 
 // ========================
 // プレイヤー更新
