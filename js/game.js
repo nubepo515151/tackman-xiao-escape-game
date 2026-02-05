@@ -1,5 +1,6 @@
-
+// ========================
 // 要素取得
+// ========================
 const gameArea = document.getElementById("game-area");
 const player = document.getElementById("player");
 player.classList.add("debug");
@@ -7,7 +8,7 @@ player.classList.add("debug");
 // ========================
 // タイマー設定（先に定義）
 // ========================
-const TIME_LIMIT = 30; // 秒数変更可能
+const TIME_LIMIT = 30;
 let timeLeft = TIME_LIMIT;
 let lastTimeStamp = performance.now();
 
@@ -60,10 +61,9 @@ gameOverScreen.style.alignItems = "center";
 gameOverScreen.style.flexDirection = "column";
 gameOverScreen.style.zIndex = "10";
 gameOverScreen.style.textAlign = "center";
-gameOverScreen.style.display = "flex";
 
 const gameOverImg = document.createElement("img");
-gameOverImg.src = "assets/images/defeat.gif"; // GIFファイルパス
+gameOverImg.src = "assets/images/defeat.gif";
 gameOverImg.style.maxWidth = "80%";
 gameOverImg.style.maxHeight = "80%";
 gameOverImg.style.margin = "0 auto";
@@ -119,7 +119,6 @@ gameArea.addEventListener("touchstart", e => {
   touchStartX = touch.clientX;
   touchStartY = touch.clientY;
 
-  // タッチ開始時にBGM再生
   if (gameAudio.paused) {
     gameAudio.play().catch(() => {});
   }
@@ -131,8 +130,7 @@ gameArea.addEventListener("touchmove", e => {
   const touch = e.touches[0];
   const dx = touch.clientX - touchStartX;
   const dy = touch.clientY - touchStartY;
-
-  const threshold = 20; // 動かす最小距離（ピクセル）
+  const threshold = 20;
 
   keys["KeyW"] = dy < -threshold;
   keys["KeyS"] = dy > threshold;
@@ -237,7 +235,7 @@ function gameOver() {
   running = false;
   gameAudio.pause();
   gameAudio.currentTime = 0;
-  gameOverScreen.style.display = "flex"; // ← ここでGIFを表示
+  gameOverScreen.style.display = "flex"; // ← GIF表示
 }
 
 // ========================
