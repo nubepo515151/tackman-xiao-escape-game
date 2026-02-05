@@ -6,7 +6,7 @@ const player = document.getElementById("player");
 player.classList.add("debug");
 
 // ========================
-// タイマー設定（先に定義）
+// タイマー設定
 // ========================
 const TIME_LIMIT = 30;
 let timeLeft = TIME_LIMIT;
@@ -18,7 +18,7 @@ gameAudio.loop = true;
 gameAudio.volume = 0.6;
 
 // ========================
-// 敵をJSで生成
+// 敵を生成
 // ========================
 const enemy = document.createElement("div");
 enemy.id = "enemy";
@@ -45,7 +45,7 @@ timer.textContent = `TIME: ${timeLeft}`;
 gameArea.appendChild(timer);
 
 // ========================
-// 敗北演出UI（GIF対応）
+// 敗北演出UI
 // ========================
 const gameOverScreen = document.createElement("div");
 gameOverScreen.id = "game-over";
@@ -80,7 +80,7 @@ const PLAYER_SPEED = 4;
 
 // 速度調整用
 const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
-let speedFactor = isMobile ? 0.25 : 1; // スマホは遅め、PCはそのまま
+let speedFactor = isMobile ? 0.25 : 1;
 
 // ========================
 // 敵設定
@@ -97,21 +97,14 @@ enemy.style.left = ex + "px";
 enemy.style.top  = ey + "px";
 
 // ========================
-// 入力管理（WASD）
+// 入力管理
 // ========================
 const keys = {};
 
-// ========================
-// ゲーム開始待機フラグ
-// ========================
-let gameStarted = false;
-
-// キー入力でゲームスタート
 window.addEventListener("keydown", e => {
-  if (!gameStarted) gameStarted = true;
-  if (gameAudio.paused) gameAudio.play().catch(() => {});
   keys[e.code] = true;
 });
+
 window.addEventListener("keyup", e => {
   keys[e.code] = false;
 });
@@ -124,12 +117,8 @@ let touchStartY = 0;
 
 gameArea.addEventListener("touchstart", e => {
   const touch = e.touches[0];
-  if (!gameStarted) gameStarted = true;
-
   touchStartX = touch.clientX;
   touchStartY = touch.clientY;
-  if (gameAudio.paused) gameAudio.play().catch(() => {});
-
   e.preventDefault();
 }, { passive: false });
 
@@ -159,8 +148,6 @@ gameArea.addEventListener("touchend", e => {
 // プレイヤー更新
 // ========================
 function updatePlayer() {
-  if (!gameStarted) return; // ゲーム開始前は動かない
-
   let vx = 0;
   let vy = 0;
 
@@ -186,11 +173,9 @@ function updatePlayer() {
 }
 
 // ========================
-// 敵更新（追尾＋ランダム）
+// 敵更新
 // ========================
 function updateEnemy() {
-  if (!gameStarted) return; // ゲーム開始前は動かない
-
   let dx = px - ex;
   let dy = py - ey;
   const dist = Math.hypot(dx, dy);
@@ -233,40 +218,34 @@ function checkCollision() {
 }
 
 // ========================
-// ゲーム終了処理
+// ゲーム終了
 // ========================
 function gameClear() {
   running = false;
   gameAudio.pause();
   gameAudio.currentTime = 0;
-  alert("CLEAR!");
-  // 勝利時ボタンはHTML側で制御
-  const replayBtn = document.getElementById("replay-button");
-  if (replayBtn) replayBtn.style.display = "block";
-  gameOverScreen.style.display = "flex";
+  showStartButtons(); // もう一度遊ぶボタン表示
 }
 
 function gameOver() {
   running = false;
   gameAudio.pause();
   gameAudio.currentTime = 0;
-  gameOverScreen.style.display = "flex"; // GIF表示
-  // 敗北時ボタンはHTML側で制御
-  const retryBtn = document.getElementById("retry-button");
-  if (retryBtn) retryBtn.style.display = "block";
+  gameOverScreen.style.display = "flex";
+  showStartButtons(); // 再挑戦ボタン表示
 }
 
 // ========================
 // ゲームループ
 // ========================
-let running = true;
+let running = false;
 
 function loop(now = performance.now()) {
   if (!running) return;
 
   const delta = (now - lastTimeStamp) / 1000;
   lastTimeStamp = now;
-  if (gameStarted) timeLeft -= delta;
+  timeLeft -= delta;
 
   if (timeLeft < 0) timeLeft = 0;
   timer.textContent = `TIME: ${Math.ceil(timeLeft)}`;
@@ -274,12 +253,12 @@ function loop(now = performance.now()) {
   updatePlayer();
   updateEnemy();
 
-  if (timeLeft <= 0 && gameStarted) {
+  if (timeLeft <= 0) {
     gameClear();
     return;
   }
 
-  if (checkCollision() && gameStarted) {
+  if (checkCollision()) {
     gameOver();
     return;
   }
@@ -287,4 +266,136 @@ function loop(now = performance.now()) {
   requestAnimationFrame(loop);
 }
 
-loop();
+// ========================
+// スタートボタン作成（勝利/敗北後に再表示）
+function showStartButtons() {
+  const existing = document.getElementById("start-button");
+  if (existing) existing.remove();
+
+  const btn = document.createElement("button");
+  btn.id = "start-button";
+  btn.textContent = "ゲームスタート";
+  btn.style.position = "absolute";
+  btn.style.bottom = "20px";
+  btn.style.left = "50%";
+  btn.style.transform = "translateX(-50%)";
+  btn.style.padding = "12px 24px";
+  btn.style.fontSize = "18px";
+  btn.style.zIndex = "30";
+  gameArea.appendChild(btn);
+
+  btn.addEventListener("click", () => {
+    timeLeft = TIME_LIMIT;
+    px = 100;
+    py = 100;
+    ex = Math.random() * (gameArea.clientWidth - 40);
+    ey = Math.random() * (gameArea.clientHeight - 40);
+    randX = 0;
+    randY = 0;
+    randTimer = 0;
+    player.style.left = px + "px";
+    player.style.top  = py + "px";
+    enemy.style.left = ex + "px";
+    enemy.style.top  = ey + "px";
+    gameOverScreen.style.display = "none";
+    running = true;
+    lastTimeStamp = performance.now();
+    loop();
+  });
+}
+
+// ========================
+// 初回スタートボタン表示
+showStartButtons();
+
+// ========================
+// ジョイスティック常時表示（スマホ用）
+let joystick, stick, joyActive = false;
+let joyCenterX = 0, joyCenterY = 0, joyDx = 0, joyDy = 0;
+
+if (isMobile) {
+  joystick = document.createElement("div");
+  joystick.style.position = "absolute";
+  joystick.style.bottom = "100px";
+  joystick.style.left = "50%";
+  joystick.style.transform = "translateX(-50%)";
+  joystick.style.width = "100px";
+  joystick.style.height = "100px";
+  joystick.style.borderRadius = "50%";
+  joystick.style.background = "rgba(255,255,255,0.2)";
+  joystick.style.touchAction = "none";
+  joystick.style.zIndex = "25";
+  gameArea.appendChild(joystick);
+
+  stick = document.createElement("div");
+  stick.style.position = "absolute";
+  stick.style.width = "50px";
+  stick.style.height = "50px";
+  stick.style.borderRadius = "50%";
+  stick.style.background = "rgba(255,255,255,0.5)";
+  stick.style.left = "25px";
+  stick.style.top = "25px";
+  joystick.appendChild(stick);
+
+  joyCenterX = 50;
+  joyCenterY = 50;
+
+  joystick.addEventListener("touchstart", e => {
+    joyActive = true;
+    updateStickPosition(e.touches[0]);
+  });
+  joystick.addEventListener("touchmove", e => {
+    if (!joyActive) return;
+    e.preventDefault();
+    updateStickPosition(e.touches[0]);
+  }, { passive: false });
+  joystick.addEventListener("touchend", e => {
+    joyActive = false;
+    joyDx = 0;
+    joyDy = 0;
+    stick.style.left = "25px";
+    stick.style.top = "25px";
+  });
+
+  function updateStickPosition(touch) {
+    const rect = joystick.getBoundingClientRect();
+    let x = touch.clientX - rect.left;
+    let y = touch.clientY - rect.top;
+
+    joyDx = x - joyCenterX;
+    joyDy = y - joyCenterY;
+
+    const dist = Math.hypot(joyDx, joyDy);
+    const maxDist = 50;
+    if (dist > maxDist) {
+      joyDx = (joyDx / dist) * maxDist;
+      joyDy = (joyDy / dist) * maxDist;
+    }
+
+    stick.style.left = (joyCenterX + joyDx - 25) + "px";
+    stick.style.top = (joyCenterY + joyDy - 25) + "px";
+  }
+
+  // スマホ用 updatePlayer にジョイスティック反映
+  const originalUpdatePlayer = updatePlayer;
+  updatePlayer = function() {
+    originalUpdatePlayer();
+    if (joyActive) {
+      let vx = joyDx / 50;
+      let vy = joyDy / 50;
+      const len = Math.hypot(vx, vy);
+      if (len > 1) {
+        vx /= len;
+        vy /= len;
+      }
+      px += vx * PLAYER_SPEED * speedFactor;
+      py += vy * PLAYER_SPEED * speedFactor;
+
+      px = Math.max(0, Math.min(px, gameArea.clientWidth - player.offsetWidth));
+      py = Math.max(0, Math.min(py, gameArea.clientHeight - player.offsetHeight));
+
+      player.style.left = px + "px";
+      player.style.top = py + "px";
+    }
+  };
+}
