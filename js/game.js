@@ -1,6 +1,5 @@
-// ========================
+
 // 要素取得
-// ========================
 const gameArea = document.getElementById("game-area");
 const player = document.getElementById("player");
 player.classList.add("debug");
