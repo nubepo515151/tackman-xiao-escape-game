@@ -1,23 +1,35 @@
-const enemy = document.getElementById("enemy");
-const player = document.getElementById("player");
-const gameArea = document.getElementById("game-area");
+let enemy;
+let player;
+let gameArea;
 
-// 敵の初期設定
-let enemyX = Math.random() * (window.innerWidth - 64);
-let enemyY = Math.random() * (window.innerHeight - 64);
+// 敵の座標
+let enemyX = 0;
+let enemyY = 0;
 
-enemy.style.left = enemyX + "px";
-enemy.style.top  = enemyY + "px";
-
-// 速度設定（プレイヤーよりやや速い想定）
+// 速度（プレイヤーよりやや速い）
 const ENEMY_SPEED = 2.5;
 
-// ランダム要素用
+// ランダム要素
 let randomOffsetX = 0;
 let randomOffsetY = 0;
 let randomTimer = 0;
 
+function initEnemy() {
+  enemy = document.getElementById("enemy");
+  player = document.getElementById("player");
+  gameArea = document.getElementById("game-area");
+
+  // 初期位置
+  enemyX = Math.random() * (gameArea.clientWidth - enemy.offsetWidth);
+  enemyY = Math.random() * (gameArea.clientHeight - enemy.offsetHeight);
+
+  enemy.style.left = enemyX + "px";
+  enemy.style.top  = enemyY + "px";
+}
+
 function updateEnemy() {
+  if (!enemy || !player) return;
+
   const playerRect = player.getBoundingClientRect();
   const enemyRect  = enemy.getBoundingClientRect();
 
@@ -26,25 +38,23 @@ function updateEnemy() {
   let dy = playerRect.top  - enemyRect.top;
 
   const distance = Math.hypot(dx, dy);
-
   if (distance !== 0) {
     dx /= distance;
     dy /= distance;
   }
 
-  // 一定時間ごとにランダム成分を変更
+  // ランダム成分（約1秒ごと）
   randomTimer++;
-  if (randomTimer > 60) { // 約1秒ごと（60fps想定）
+  if (randomTimer > 60) {
     randomOffsetX = (Math.random() - 0.5) * 0.6;
     randomOffsetY = (Math.random() - 0.5) * 0.6;
     randomTimer = 0;
   }
 
-  // 追尾 + ランダム
   enemyX += (dx + randomOffsetX) * ENEMY_SPEED;
   enemyY += (dy + randomOffsetY) * ENEMY_SPEED;
 
-  // 画面外に出ない制御
+  // 画面外制御
   const maxX = gameArea.clientWidth  - enemyRect.width;
   const maxY = gameArea.clientHeight - enemyRect.height;
 
@@ -55,6 +65,8 @@ function updateEnemy() {
   enemy.style.top  = enemyY + "px";
 }
 
-// game.js から呼ばれる想定
-// enemy.js の末尾に追加
+// グローバル公開
 window.updateEnemy = updateEnemy;
+
+// DOMロード後に初期化
+window.addEventListener("load", initEnemy);

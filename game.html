@@ -3,42 +3,16 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport"
-        content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-  <title>Game</title>
-
-  <link rel="stylesheet" href="css/common.css">
-  <link rel="stylesheet" href="css/game.css">
+        content="width=device-width, initial-scale=1.0, user-scalable=no" />
+  <title>Game Step1</title>
+  <link rel="stylesheet" href="css/game.css" />
 </head>
 <body>
 
-  <!-- ゲームフィールド -->
   <div id="game-area">
-    <div id="timer">60</div>
-
-    <img id="player" src="assets/images/player.png" alt="player">
-    <img id="enemy" src="assets/images/enemy.png" alt="enemy">
+    <div id="player"></div>
   </div>
 
-  <!-- 勝利演出 -->
-  <video id="winVideo" src="assets/video/win.mov" playsinline></video>
-
-  <!-- 敗北演出 -->
-  <div id="defeatScreen">
-    <img src="assets/effects/defeat.gif" alt="defeat">
-    <p>敗北</p>
-    <button id="retryBtn">再挑戦</button>
-  </div>
-
-  <!-- BGM -->
-  <audio id="bgm" src="audio/game.wav"></audio>
-
-  <!-- JS -->
-  <script src="js/input.js"></script>
-  <script src="js/player.js"></script>
-  <script src="js/enemy.js"></script>
-  <script src="js/collision.js"></script>
-  <script src="js/timer.js"></script>
-  <script src="js/sound.js"></script>
   <script src="js/game.js"></script>
 </body>
 </html>
