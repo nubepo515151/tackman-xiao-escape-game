@@ -56,14 +56,18 @@ gameOverScreen.style.width = "100%";
 gameOverScreen.style.height = "100%";
 gameOverScreen.style.background = "rgba(0,0,0,0.7)";
 gameOverScreen.style.display = "none";
-gameOverScreen.style.alignItems = "center";
 gameOverScreen.style.justifyContent = "center";
+gameOverScreen.style.alignItems = "center";
+gameOverScreen.style.flexDirection = "column"; // これでGIF中央に
 gameOverScreen.style.zIndex = "10";
+gameOverScreen.style.textAlign = "center";
+gameOverScreen.style.display = "flex"; // flexを有効化
 
 const gameOverImg = document.createElement("img");
 gameOverImg.src = "assets/images/defeat.gif"; // GIFファイルパス
 gameOverImg.style.maxWidth = "80%";
 gameOverImg.style.maxHeight = "80%";
+gameOverImg.style.margin = "0 auto";
 gameOverScreen.appendChild(gameOverImg);
 
 gameArea.appendChild(gameOverScreen);
