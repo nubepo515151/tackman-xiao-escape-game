@@ -2,7 +2,7 @@
   margin: 0;
   padding: 0;
   box-sizing: border-box;
-  touch-action: none; /* スマホ拡大・ジェスチャー防止 */
+  touch-action: none;
 }
 
 body {
@@ -25,12 +25,9 @@ body {
 #player,
 #enemy {
   position: absolute;
-
-  /* ゲーム上のサイズ（当たり判定もこれ） */
   width: 40px;
   height: 40px;
 
-  /* 最大256×256画像対応 */
   background-size: contain;
   background-repeat: no-repeat;
   background-position: center;
@@ -46,16 +43,38 @@ body {
 }
 
 /* =========================
-   敵（tackman xiao）
+   敵
 ========================= */
 #enemy {
   background-image: url("../assets/images/enemy.png");
-  background-size: contain;
-  background-repeat: no-repeat;
-  background-position: center;
 }
 
+/* =========================
+   デバッグ（当たり判定可視化）
+========================= */
 .debug {
   outline: 2px solid red;
   background-color: rgba(255, 0, 0, 0.15);
+}
+
+/* =========================
+   GAME OVER 画面（GIF再生）
+========================= */
+#game-over {
+  display: none;               /* JSで flex にされる */
+  position: absolute;
+  inset: 0;
+  z-index: 10;
+
+  background-color: rgba(0, 0, 0, 0.7);
+
+  /* ここがGIF表示部分 */
+  background-image: url("../assets/images/defeat.gif");
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: contain;
+
+  /* テキストは消す */
+  color: transparent;
+  font-size: 0;
 }

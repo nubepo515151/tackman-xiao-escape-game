@@ -6,14 +6,19 @@ const player = document.getElementById("player");
 player.classList.add("debug");
 
 // ========================
-// タイマー設定（← 先に定義！！）
+// タイマー設定（先に定義）
 // ========================
-const TIME_LIMIT = 30; // ここを変えれば秒数変更できる
+const TIME_LIMIT = 30; // 秒数変更可能
 let timeLeft = TIME_LIMIT;
 let lastTimeStamp = performance.now();
 
+// BGM
+const gameAudio = new Audio("assets/audio/game.wav");
+gameAudio.loop = true;
+gameAudio.volume = 0.6;
+
 // ========================
-// 敵をJSで生成（HTMLは触らない）
+// 敵をJSで生成
 // ========================
 const enemy = document.createElement("div");
 enemy.id = "enemy";
@@ -38,6 +43,30 @@ timer.style.fontSize = "24px";
 timer.style.fontFamily = "monospace";
 timer.textContent = `TIME: ${timeLeft}`;
 gameArea.appendChild(timer);
+
+// ========================
+// 敗北演出UI（GIF対応）
+// ========================
+const gameOverScreen = document.createElement("div");
+gameOverScreen.id = "game-over";
+gameOverScreen.style.position = "absolute";
+gameOverScreen.style.top = "0";
+gameOverScreen.style.left = "0";
+gameOverScreen.style.width = "100%";
+gameOverScreen.style.height = "100%";
+gameOverScreen.style.background = "rgba(0,0,0,0.7)";
+gameOverScreen.style.display = "none";
+gameOverScreen.style.alignItems = "center";
+gameOverScreen.style.justifyContent = "center";
+gameOverScreen.style.zIndex = "10";
+
+const gameOverImg = document.createElement("img");
+gameOverImg.src = "assets/images/defeat.gif"; // GIFファイルパス
+gameOverImg.style.maxWidth = "80%";
+gameOverImg.style.maxHeight = "80%";
+gameOverScreen.appendChild(gameOverImg);
+
+gameArea.appendChild(gameOverScreen);
 
 // ========================
 // プレイヤー設定
@@ -66,6 +95,9 @@ enemy.style.top  = ey + "px";
 const keys = {};
 
 window.addEventListener("keydown", e => {
+  if (gameAudio.paused) {
+    gameAudio.play().catch(() => {});
+  }
   keys[e.code] = true;
 });
 
@@ -80,10 +112,10 @@ function updatePlayer() {
   let vx = 0;
   let vy = 0;
 
-if (keys["KeyW"]) vy -= 1;
-if (keys["KeyS"]) vy += 1;
-if (keys["KeyA"]) vx -= 1;
-if (keys["KeyD"]) vx += 1;
+  if (keys["KeyW"]) vy -= 1;
+  if (keys["KeyS"]) vy += 1;
+  if (keys["KeyA"]) vx -= 1;
+  if (keys["KeyD"]) vx += 1;
 
   const len = Math.hypot(vx, vy);
   if (len !== 0) {
@@ -147,6 +179,23 @@ function checkCollision() {
 }
 
 // ========================
+// ゲーム終了処理
+// ========================
+function gameClear() {
+  running = false;
+  gameAudio.pause();
+  gameAudio.currentTime = 0;
+  alert("CLEAR!");
+}
+
+function gameOver() {
+  running = false;
+  gameAudio.pause();
+  gameAudio.currentTime = 0;
+  gameOverScreen.style.display = "flex";
+}
+
+// ========================
 // ゲームループ
 // ========================
 let running = true;
@@ -165,14 +214,12 @@ function loop(now = performance.now()) {
   updateEnemy();
 
   if (timeLeft <= 0) {
-    running = false;
-    alert("CLEAR!");
+    gameClear();
     return;
   }
 
   if (checkCollision()) {
-    running = false;
-    alert("GAME OVER");
+    gameOver();
     return;
   }
 
