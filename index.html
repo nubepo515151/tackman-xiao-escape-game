@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport"
+        content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>Escape Game</title>
+  <link rel="stylesheet" href="css/common.css">
+  <style>
+    body {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+    #startBtn {
+      font-size: 24px;
+      padding: 20px 40px;
+    }
+  </style>
+</head>
+<body>
+  <button id="startBtn">開始</button>
+
+  <script>
+    document.getElementById("startBtn").addEventListener("click", () => {
+      location.href = "game.html";
+    });
+  </script>
+</body>
+</html>
