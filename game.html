@@ -11,8 +11,24 @@
 
   <div id="game-area">
     <div id="player"></div>
+
+    <!-- 敗北時 再挑戦ボタン -->
+    <button id="retry-button" class="game-button" style="display:none;">再挑戦</button>
+
+    <!-- 勝利時 もう一度遊ぶボタン -->
+    <button id="replay-button" class="game-button" style="display:none;">もう一度遊ぶ</button>
+
   </div>
 
   <script src="js/game.js"></script>
+
+  <script>
+    // ボタン押下でページリロード（簡易リスタート）
+    const retryBtn = document.getElementById("retry-button");
+    const replayBtn = document.getElementById("replay-button");
+
+    retryBtn.addEventListener("click", () => location.reload());
+    replayBtn.addEventListener("click", () => location.reload());
+  </script>
 </body>
 </html>

@@ -78,3 +78,39 @@ body {
   color: transparent;
   font-size: 0;
 }
+
+/* =========================
+   ゲームボタン
+========================= */
+.game-button {
+  position: absolute;
+  padding: 12px 24px;
+  font-size: 20px;
+  font-family: monospace;
+  border: none;
+  border-radius: 8px;
+  background-color: #fff;
+  color: #111;
+  cursor: pointer;
+  z-index: 20;
+  transition: transform 0.1s;
+}
+
+/* ボタン押下エフェクト */
+.game-button:active {
+  transform: scale(0.95);
+}
+
+/* 再挑戦ボタン（敗北）位置 */
+#retry-button {
+  bottom: 30%;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+/* もう一度遊ぶボタン（勝利）位置 */
+#replay-button {
+  bottom: 30%;
+  left: 50%;
+  transform: translateX(-50%);
+}

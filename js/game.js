@@ -6,7 +6,7 @@ const player = document.getElementById("player");
 player.classList.add("debug");
 
 // ========================
-// タイマー設定
+// タイマー設定（先に定義）
 // ========================
 const TIME_LIMIT = 30;
 let timeLeft = TIME_LIMIT;
@@ -18,11 +18,12 @@ gameAudio.loop = true;
 gameAudio.volume = 0.6;
 
 // ========================
-// 敵生成
+// 敵をJSで生成
 // ========================
 const enemy = document.createElement("div");
 enemy.id = "enemy";
-enemy.classList.add("enemy", "debug");
+enemy.classList.add("enemy");
+enemy.classList.add("debug");
 enemy.style.width = "40px";
 enemy.style.height = "40px";
 enemy.style.position = "absolute";
@@ -44,7 +45,7 @@ timer.textContent = `TIME: ${timeLeft}`;
 gameArea.appendChild(timer);
 
 // ========================
-// 敗北／勝利UI
+// 敗北演出UI（GIF対応）
 // ========================
 const gameOverScreen = document.createElement("div");
 gameOverScreen.id = "game-over";
@@ -77,9 +78,9 @@ let px = 100;
 let py = 100;
 const PLAYER_SPEED = 4;
 
-// 速度係数
+// 速度調整用
 const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
-let speedFactor = isMobile ? 0.25 : 1;
+let speedFactor = isMobile ? 0.25 : 1; // スマホは遅め、PCはそのまま
 
 // ========================
 // 敵設定
@@ -96,7 +97,7 @@ enemy.style.left = ex + "px";
 enemy.style.top  = ey + "px";
 
 // ========================
-// 入力管理
+// 入力管理（WASD）
 // ========================
 const keys = {};
 
@@ -105,18 +106,18 @@ const keys = {};
 // ========================
 let gameStarted = false;
 
+// キー入力でゲームスタート
 window.addEventListener("keydown", e => {
   if (!gameStarted) gameStarted = true;
   if (gameAudio.paused) gameAudio.play().catch(() => {});
   keys[e.code] = true;
 });
-
 window.addEventListener("keyup", e => {
   keys[e.code] = false;
 });
 
 // ========================
-// スマホタッチ入力
+// スマホ操作（タッチ入力）
 // ========================
 let touchStartX = 0;
 let touchStartY = 0;
@@ -124,9 +125,11 @@ let touchStartY = 0;
 gameArea.addEventListener("touchstart", e => {
   const touch = e.touches[0];
   if (!gameStarted) gameStarted = true;
+
   touchStartX = touch.clientX;
   touchStartY = touch.clientY;
   if (gameAudio.paused) gameAudio.play().catch(() => {});
+
   e.preventDefault();
 }, { passive: false });
 
@@ -156,7 +159,7 @@ gameArea.addEventListener("touchend", e => {
 // プレイヤー更新
 // ========================
 function updatePlayer() {
-  if (!gameStarted) return;
+  if (!gameStarted) return; // ゲーム開始前は動かない
 
   let vx = 0;
   let vy = 0;
@@ -183,10 +186,10 @@ function updatePlayer() {
 }
 
 // ========================
-// 敵更新
+// 敵更新（追尾＋ランダム）
 // ========================
 function updateEnemy() {
-  if (!gameStarted) return;
+  if (!gameStarted) return; // ゲーム開始前は動かない
 
   let dx = px - ex;
   let dy = py - ey;
@@ -232,61 +235,26 @@ function checkCollision() {
 // ========================
 // ゲーム終了処理
 // ========================
-function gameOver() {
-  running = false;
-  gameAudio.pause();
-  gameAudio.currentTime = 0;
-  gameOverScreen.style.display = "flex";
-  retryButton.style.display = "block";
-}
-
 function gameClear() {
   running = false;
   gameAudio.pause();
   gameAudio.currentTime = 0;
+  alert("CLEAR!");
+  // 勝利時ボタンはHTML側で制御
+  const replayBtn = document.getElementById("replay-button");
+  if (replayBtn) replayBtn.style.display = "block";
   gameOverScreen.style.display = "flex";
-  replayButton.style.display = "block";
 }
 
-// ========================
-// ゲームリセット
-// ========================
-function resetGame() {
-  gameOverScreen.style.display = "none";
-  retryButton.style.display = "none";
-  replayButton.style.display = "none";
-
-  px = 100;
-  py = 100;
-  ex = Math.random() * (gameArea.clientWidth - 40);
-  ey = Math.random() * (gameArea.clientHeight - 40);
-  timeLeft = TIME_LIMIT;
-  lastTimeStamp = performance.now();
-  gameStarted = false;
-  running = true;
-
-  player.style.left = px + "px";
-  player.style.top  = py + "px";
-  enemy.style.left = ex + "px";
-  enemy.style.top  = ey + "px";
-
-  loop();
+function gameOver() {
+  running = false;
+  gameAudio.pause();
+  gameAudio.currentTime = 0;
+  gameOverScreen.style.display = "flex"; // GIF表示
+  // 敗北時ボタンはHTML側で制御
+  const retryBtn = document.getElementById("retry-button");
+  if (retryBtn) retryBtn.style.display = "block";
 }
-
-// ========================
-// ボタン作成
-// ========================
-const retryButton = document.createElement("button");
-retryButton.textContent = "再挑戦";
-retryButton.style.display = "none";
-retryButton.onclick = resetGame;
-gameOverScreen.appendChild(retryButton);
-
-const replayButton = document.createElement("button");
-replayButton.textContent = "もう一度遊ぶ";
-replayButton.style.display = "none";
-replayButton.onclick = resetGame;
-gameOverScreen.appendChild(replayButton);
 
 // ========================
 // ゲームループ
