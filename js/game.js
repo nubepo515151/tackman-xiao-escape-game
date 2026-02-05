@@ -80,7 +80,7 @@ const PLAYER_SPEED = 4;
 
 // ここから追加：速度調整用
 const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
-let speedFactor = isMobile ? 0.6 : 1; // スマホは遅め、PCはそのまま
+let speedFactor = isMobile ? 0.25 : 1; // スマホは遅め、PCはそのまま
 
 // ========================
 // 敵設定
@@ -275,3 +275,4 @@ function loop(now = performance.now()) {
 }
 
 loop();
+
