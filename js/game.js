@@ -22,7 +22,7 @@ gameAudio.volume = 0.6;
 // ========================
 // 敗北SE
 // ========================
-const defeatAudio = new Audio("assets/audio/defeat.wav");
+const defeatAudio = new Audio("assets/audio/gameover.wav");
 defeatAudio.volume = 0.8;
 
 // ========================
@@ -423,5 +423,6 @@ if (isMobile) {
     keys["KeyD"] = joyDx > 5;
   }
 }
+
 
 
