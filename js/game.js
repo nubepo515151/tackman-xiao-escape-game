@@ -158,7 +158,7 @@ gameArea.appendChild(winScreen);
 let px = 100, py = 100;
 const PLAYER_SPEED = 4;
 const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
-let speedFactor = isMobile ? 0.25 : 1;
+let speedFactor = isMobile ? 1 : 1;
 
 // ========================
 // 敵設定
@@ -413,3 +413,4 @@ if (isMobile) {
     keys["KeyD"] = joyDx > 5;
   }
 }
+
