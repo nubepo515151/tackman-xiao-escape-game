@@ -20,6 +20,12 @@ gameAudio.loop = true;
 gameAudio.volume = 0.6;
 
 // ========================
+// 敗北SE
+// ========================
+const defeatAudio = new Audio("assets/audio/defeat.wav");
+defeatAudio.volume = 0.8;
+
+// ========================
 // 敵生成
 // ========================
 const enemy = document.createElement("div");
@@ -288,6 +294,10 @@ function gameOver() {
   running = false;
   gameAudio.pause();
   gameAudio.currentTime = 0;
+  
+  defeatAudio.currentTime = 0;
+  defeatAudio.play().catch(() => {});
+
   gameOverScreen.style.display = "flex";
   retryButton.style.display = "block";
 }
@@ -413,4 +423,5 @@ if (isMobile) {
     keys["KeyD"] = joyDx > 5;
   }
 }
+
 
