@@ -88,6 +88,7 @@ retryButton.classList.add("game-button");
 retryButton.id = "retry-button";
 retryButton.style.display = "none";
 retryButton.onclick = () => location.reload();
+retryButton.addEventListener("touchstart", e => e.stopPropagation(), { passive: true });
 gameOverScreen.appendChild(retryButton);
 
 gameArea.appendChild(gameOverScreen);
@@ -128,15 +129,13 @@ winScreen.appendChild(winVideo);
 const winText = document.createElement("div");
 winText.textContent = "おめでとう！";
 winText.style.color = "white";
-winText.style.fontSize = "32px";
+winText.style.fontSize = "36px";
 winText.style.fontFamily = "monospace";
-// 例：画面中央の少し上に表示
 winText.style.position = "absolute";
-winText.style.top = "40%";      // 縦位置（パーセンテージでもpxでも可）
-winText.style.left = "50%";      // 横位置中央
-winText.style.transform = "translateX(-50%)"; // 横中央に寄せる
-winText.style.fontSize = "36px";  // サイズ調整
-winText.style.display = "none";   // 初期非表示
+winText.style.top = "40%";
+winText.style.left = "50%";
+winText.style.transform = "translateX(-50%)";
+winText.style.display = "none"; // 初期非表示
 winScreen.appendChild(winText);
 
 // もう一度遊ぶボタン
@@ -146,6 +145,7 @@ replayButton.classList.add("game-button");
 replayButton.id = "replay-button";
 replayButton.style.display = "none";
 replayButton.onclick = () => window.location.href = "index.html";
+replayButton.addEventListener("touchstart", e => e.stopPropagation(), { passive: true });
 winScreen.appendChild(replayButton);
 
 gameArea.appendChild(winScreen);
@@ -157,7 +157,7 @@ let px = 100;
 let py = 100;
 const PLAYER_SPEED = 4;
 const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
-let speedFactor = isMobile ? 0.25 : 1;
+let speedFactor = isMobile ? 1 : 1;
 
 // ========================
 // 敵設定
@@ -271,7 +271,7 @@ function updateEnemy() {
   ey = Math.max(0, Math.min(ey, gameArea.clientHeight - enemy.offsetHeight));
 
   enemy.style.left = ex + "px";
-  enemy.style.top  = ey + "px";
+  enemy.style.top = ey + "px";
 }
 
 // ========================
@@ -303,7 +303,7 @@ function gameClear() {
   winVideo.style.display = "block";
   winVideo.play().catch(() => {});
   winVideo.onended = () => {
-    winVideo.style.display = "none"; // 動画非表示
+    winVideo.style.display = "none";
     winText.style.display = "block";
     replayButton.style.display = "block";
   };
