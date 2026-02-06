@@ -120,7 +120,7 @@ Object.assign(winScreen.style, {
 });
 
 const winVideo = document.createElement("video");
-winVideo.src = "assets/videos/win.MP4";
+winVideo.src = "assets/videos/win.mp4";
 Object.assign(winVideo.style, {
   position: "absolute",
   top: "0",
@@ -423,6 +423,7 @@ if (isMobile) {
     keys["KeyD"] = joyDx > 5;
   }
 }
+
 
 
 
