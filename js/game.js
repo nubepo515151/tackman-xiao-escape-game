@@ -20,12 +20,11 @@ gameAudio.loop = true;
 gameAudio.volume = 0.6;
 
 // ========================
-// 敵をJSで生成
+// 敵生成
 // ========================
 const enemy = document.createElement("div");
 enemy.id = "enemy";
-enemy.classList.add("enemy");
-enemy.classList.add("debug");
+enemy.classList.add("enemy", "debug");
 enemy.style.width = "40px";
 enemy.style.height = "40px";
 enemy.style.position = "absolute";
@@ -47,24 +46,25 @@ timer.textContent = `TIME: ${timeLeft}`;
 gameArea.appendChild(timer);
 
 // ========================
-// 敗北演出UI
+// 敗北UI
 // ========================
 const gameOverScreen = document.createElement("div");
 gameOverScreen.id = "game-over";
-gameOverScreen.style.position = "absolute";
-gameOverScreen.style.top = "0";
-gameOverScreen.style.left = "0";
-gameOverScreen.style.width = "100%";
-gameOverScreen.style.height = "100%";
-gameOverScreen.style.background = "rgba(0,0,0,0.7)";
-gameOverScreen.style.display = "none";
-gameOverScreen.style.flexDirection = "column";
-gameOverScreen.style.justifyContent = "center";
-gameOverScreen.style.alignItems = "center";
-gameOverScreen.style.zIndex = "10";
-gameOverScreen.style.textAlign = "center";
+Object.assign(gameOverScreen.style, {
+  position: "absolute",
+  top: "0",
+  left: "0",
+  width: "100%",
+  height: "100%",
+  background: "rgba(0,0,0,0.7)",
+  display: "none",
+  flexDirection: "column",
+  justifyContent: "center",
+  alignItems: "center",
+  zIndex: "10",
+  textAlign: "center",
+});
 
-// GIF
 const gameOverImg = document.createElement("img");
 gameOverImg.src = "assets/images/defeat.gif";
 gameOverImg.style.maxWidth = "80%";
@@ -72,80 +72,82 @@ gameOverImg.style.maxHeight = "80%";
 gameOverImg.style.margin = "0 auto";
 gameOverScreen.appendChild(gameOverImg);
 
-// テキスト
 const gameOverText = document.createElement("div");
 gameOverText.textContent = "捕まってしまった・・・";
-gameOverText.style.color = "white";
-gameOverText.style.fontSize = "24px";
-gameOverText.style.fontFamily = "monospace";
-gameOverText.style.marginTop = "16px";
+Object.assign(gameOverText.style, {
+  color: "white",
+  fontSize: "24px",
+  fontFamily: "monospace",
+  marginTop: "16px",
+});
 gameOverScreen.appendChild(gameOverText);
 
-// 再挑戦ボタン
 const retryButton = document.createElement("button");
 retryButton.textContent = "再挑戦";
 retryButton.classList.add("game-button");
 retryButton.id = "retry-button";
 retryButton.style.display = "none";
-retryButton.onclick = () => location.reload();
-retryButton.addEventListener("touchstart", e => e.stopPropagation(), { passive: true });
+retryButton.addEventListener("touchstart", () => location.reload());
+retryButton.addEventListener("click", () => location.reload());
 gameOverScreen.appendChild(retryButton);
 
 gameArea.appendChild(gameOverScreen);
 
 // ========================
-// 勝利演出UI
+// 勝利UI
 // ========================
 const winScreen = document.createElement("div");
 winScreen.id = "win-screen";
-winScreen.style.position = "absolute";
-winScreen.style.top = "0";
-winScreen.style.left = "0";
-winScreen.style.width = "100%";
-winScreen.style.height = "100%";
-winScreen.style.background = "rgba(0,0,0,0.7)";
-winScreen.style.display = "none";
-winScreen.style.flexDirection = "column";
-winScreen.style.justifyContent = "center";
-winScreen.style.alignItems = "center";
-winScreen.style.zIndex = "20";
-winScreen.style.textAlign = "center";
+Object.assign(winScreen.style, {
+  position: "absolute",
+  top: "0",
+  left: "0",
+  width: "100%",
+  height: "100%",
+  background: "rgba(0,0,0,0.7)",
+  display: "none",
+  flexDirection: "column",
+  justifyContent: "center",
+  alignItems: "center",
+  zIndex: "20",
+  textAlign: "center",
+});
 
-// 動画（全画面）
 const winVideo = document.createElement("video");
 winVideo.src = "assets/videos/win.mp4";
-winVideo.style.position = "absolute";
-winVideo.style.top = "0";
-winVideo.style.left = "0";
-winVideo.style.width = "100%";
-winVideo.style.height = "100%";
-winVideo.style.objectFit = "cover";
+Object.assign(winVideo.style, {
+  position: "absolute",
+  top: "0",
+  left: "0",
+  width: "100%",
+  height: "100%",
+  objectFit: "cover",
+});
 winVideo.autoplay = false;
 winVideo.controls = false;
-winVideo.muted = false;
 winScreen.appendChild(winVideo);
 
-// テキスト
 const winText = document.createElement("div");
 winText.textContent = "おめでとう！";
-winText.style.color = "white";
-winText.style.fontSize = "36px";
-winText.style.fontFamily = "monospace";
-winText.style.position = "absolute";
-winText.style.top = "40%";
-winText.style.left = "50%";
-winText.style.transform = "translateX(-50%)";
-winText.style.display = "none"; // 初期非表示
+Object.assign(winText.style, {
+  color: "white",
+  fontSize: "36px",
+  fontFamily: "monospace",
+  position: "absolute",
+  top: "40%",
+  left: "50%",
+  transform: "translateX(-50%)",
+  display: "none",
+});
 winScreen.appendChild(winText);
 
-// もう一度遊ぶボタン
 const replayButton = document.createElement("button");
 replayButton.textContent = "もう一度遊ぶ";
 replayButton.classList.add("game-button");
 replayButton.id = "replay-button";
 replayButton.style.display = "none";
-replayButton.onclick = () => window.location.href = "index.html";
-replayButton.addEventListener("touchstart", e => e.stopPropagation(), { passive: true });
+replayButton.addEventListener("touchstart", () => window.location.href = "index.html");
+replayButton.addEventListener("click", () => window.location.href = "index.html");
 winScreen.appendChild(replayButton);
 
 gameArea.appendChild(winScreen);
@@ -153,11 +155,10 @@ gameArea.appendChild(winScreen);
 // ========================
 // プレイヤー設定
 // ========================
-let px = 100;
-let py = 100;
+let px = 100, py = 100;
 const PLAYER_SPEED = 4;
 const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
-let speedFactor = isMobile ? 1 : 1;
+let speedFactor = isMobile ? 0.25 : 1;
 
 // ========================
 // 敵設定
@@ -165,19 +166,16 @@ let speedFactor = isMobile ? 1 : 1;
 let ex = Math.random() * (gameArea.clientWidth - 40);
 let ey = Math.random() * (gameArea.clientHeight - 40);
 const ENEMY_SPEED = 3;
-let randX = 0;
-let randY = 0;
-let randTimer = 0;
+let randX = 0, randY = 0, randTimer = 0;
 
 enemy.style.left = ex + "px";
-enemy.style.top  = ey + "px";
+enemy.style.top = ey + "px";
 
 // ========================
 // 入力管理
 // ========================
 const keys = {};
-let running = false;
-let gameStarted = false;
+let running = false, gameStarted = false;
 
 function startGame() {
   if (!gameStarted) {
@@ -298,10 +296,23 @@ function gameClear() {
   running = false;
   gameAudio.pause();
   gameAudio.currentTime = 0;
+
   winScreen.style.display = "flex";
   winVideo.currentTime = 0;
   winVideo.style.display = "block";
-  winVideo.play().catch(() => {});
+  winText.style.display = "none";
+  replayButton.style.display = "none";
+
+  // スマホでも確実に再生
+  const playPromise = winVideo.play();
+  if (playPromise !== undefined) {
+    playPromise.catch(() => {
+      // ユーザー操作後に再生
+      winScreen.addEventListener("touchstart", () => winVideo.play().catch(() => {}), { once: true });
+      winScreen.addEventListener("click", () => winVideo.play().catch(() => {}), { once: true });
+    });
+  }
+
   winVideo.onended = () => {
     winVideo.style.display = "none";
     winText.style.display = "block";
@@ -346,47 +357,37 @@ let joyCenterX = 0, joyCenterY = 0, joyDx = 0, joyDy = 0;
 
 if (isMobile) {
   joystick = document.createElement("div");
-  joystick.style.position = "absolute";
-  joystick.style.bottom = "20px";
-  joystick.style.left = "50%";
-  joystick.style.transform = "translateX(-50%)";
-  joystick.style.width = "100px";
-  joystick.style.height = "100px";
-  joystick.style.borderRadius = "50%";
-  joystick.style.background = "rgba(255,255,255,0.2)";
-  joystick.style.touchAction = "none";
+  Object.assign(joystick.style, {
+    position: "absolute",
+    bottom: "20px",
+    left: "50%",
+    transform: "translateX(-50%)",
+    width: "100px",
+    height: "100px",
+    borderRadius: "50%",
+    background: "rgba(255,255,255,0.2)",
+    touchAction: "none",
+  });
   gameArea.appendChild(joystick);
 
   stick = document.createElement("div");
-  stick.style.position = "absolute";
-  stick.style.width = "50px";
-  stick.style.height = "50px";
-  stick.style.borderRadius = "50%";
-  stick.style.background = "rgba(255,255,255,0.5)";
-  stick.style.left = "25px";
-  stick.style.top = "25px";
+  Object.assign(stick.style, {
+    position: "absolute",
+    width: "50px",
+    height: "50px",
+    borderRadius: "50%",
+    background: "rgba(255,255,255,0.5)",
+    left: "25px",
+    top: "25px",
+  });
   joystick.appendChild(stick);
 
   joyCenterX = 50;
   joyCenterY = 50;
 
-  joystick.addEventListener("touchstart", e => {
-    joyActive = true;
-    startGame();
-    updateStickPosition(e.touches[0]);
-  });
-  joystick.addEventListener("touchmove", e => {
-    if (!joyActive) return;
-    e.preventDefault();
-    updateStickPosition(e.touches[0]);
-  }, { passive: false });
-  joystick.addEventListener("touchend", e => {
-    joyActive = false;
-    joyDx = 0;
-    joyDy = 0;
-    stick.style.left = "25px";
-    stick.style.top = "25px";
-  });
+  joystick.addEventListener("touchstart", e => { joyActive = true; startGame(); updateStickPosition(e.touches[0]); });
+  joystick.addEventListener("touchmove", e => { if (!joyActive) return; e.preventDefault(); updateStickPosition(e.touches[0]); }, { passive: false });
+  joystick.addEventListener("touchend", e => { joyActive = false; joyDx = 0; joyDy = 0; stick.style.left = "25px"; stick.style.top = "25px"; });
 
   function updateStickPosition(touch) {
     const rect = joystick.getBoundingClientRect();
