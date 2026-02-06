@@ -27,7 +27,6 @@ body {
   position: absolute;
   width: 40px;
   height: 40px;
-
   background-size: contain;
   background-repeat: no-repeat;
   background-position: center;
@@ -58,25 +57,45 @@ body {
 }
 
 /* =========================
-   GAME OVER 画面（GIF再生）
+   GAME OVER 画面
 ========================= */
 #game-over {
-  display: none;               /* JSで flex にされる */
+  display: none;
   position: absolute;
   inset: 0;
   z-index: 10;
-
   background-color: rgba(0, 0, 0, 0.7);
+  text-align: center;
+}
 
-  /* ここがGIF表示部分 */
-  background-image: url("../assets/images/defeat.gif");
-  background-repeat: no-repeat;
-  background-position: center;
-  background-size: contain;
+/* テキスト */
+#game-over div {
+  color: white;
+  font-size: 24px;
+  margin-top: 20px;
+}
 
-  /* テキストは消す */
-  color: transparent;
-  font-size: 0;
+/* =========================
+   勝利画面
+========================= */
+#win-screen {
+  display: none;
+  position: absolute;
+  inset: 0;
+  background-color: rgba(0,0,0,0.9);
+  display: flex;
+  justify-content: center;
+  align-items: top;
+  flex-direction: column;
+  text-align: center;
+  z-index: 20;
+}
+
+#win-text {
+  font-family: monospace;
+  font-size: 32px;
+  color: white;
+  margin-top: 20px;
 }
 
 /* =========================
@@ -96,21 +115,7 @@ body {
   transition: transform 0.1s;
 }
 
-/* ボタン押下エフェクト */
-.game-button:active {
-  transform: scale(0.95);
-}
+.game-button:active { transform: scale(0.95); }
 
-/* 再挑戦ボタン（敗北）位置 */
-#retry-button {
-  bottom: 30%;
-  left: 50%;
-  transform: translateX(-50%);
-}
-
-/* もう一度遊ぶボタン（勝利）位置 */
-#replay-button {
-  bottom: 30%;
-  left: 50%;
-  transform: translateX(-50%);
-}
+#retry-button { bottom: 30%; left: 50%; transform: translateX(-50%); }
+#replay-button { margin-top: 20px; }

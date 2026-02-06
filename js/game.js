@@ -8,7 +8,7 @@ player.classList.add("debug");
 // ========================
 // タイマー設定
 // ========================
-const TIME_LIMIT = 30;
+const TIME_LIMIT = 3;
 let timeLeft = TIME_LIMIT;
 let lastTimeStamp = performance.now();
 
@@ -47,7 +47,7 @@ timer.textContent = `TIME: ${timeLeft}`;
 gameArea.appendChild(timer);
 
 // ========================
-// 敗北演出UI（GIF対応）
+// 敗北演出UI
 // ========================
 const gameOverScreen = document.createElement("div");
 gameOverScreen.id = "game-over";
@@ -58,19 +58,97 @@ gameOverScreen.style.width = "100%";
 gameOverScreen.style.height = "100%";
 gameOverScreen.style.background = "rgba(0,0,0,0.7)";
 gameOverScreen.style.display = "none";
+gameOverScreen.style.flexDirection = "column";
 gameOverScreen.style.justifyContent = "center";
 gameOverScreen.style.alignItems = "center";
-gameOverScreen.style.flexDirection = "column";
 gameOverScreen.style.zIndex = "10";
 gameOverScreen.style.textAlign = "center";
 
+// GIF
 const gameOverImg = document.createElement("img");
 gameOverImg.src = "assets/images/defeat.gif";
 gameOverImg.style.maxWidth = "80%";
 gameOverImg.style.maxHeight = "80%";
 gameOverImg.style.margin = "0 auto";
 gameOverScreen.appendChild(gameOverImg);
+
+// テキスト
+const gameOverText = document.createElement("div");
+gameOverText.textContent = "捕まってしまった・・・";
+gameOverText.style.color = "white";
+gameOverText.style.fontSize = "24px";
+gameOverText.style.fontFamily = "monospace";
+gameOverText.style.marginTop = "16px";
+gameOverScreen.appendChild(gameOverText);
+
+// 再挑戦ボタン
+const retryButton = document.createElement("button");
+retryButton.textContent = "再挑戦";
+retryButton.classList.add("game-button");
+retryButton.id = "retry-button";
+retryButton.style.display = "none";
+retryButton.onclick = () => location.reload();
+gameOverScreen.appendChild(retryButton);
+
 gameArea.appendChild(gameOverScreen);
+
+// ========================
+// 勝利演出UI
+// ========================
+const winScreen = document.createElement("div");
+winScreen.id = "win-screen";
+winScreen.style.position = "absolute";
+winScreen.style.top = "0";
+winScreen.style.left = "0";
+winScreen.style.width = "100%";
+winScreen.style.height = "100%";
+winScreen.style.background = "rgba(0,0,0,0.7)";
+winScreen.style.display = "none";
+winScreen.style.flexDirection = "column";
+winScreen.style.justifyContent = "center";
+winScreen.style.alignItems = "center";
+winScreen.style.zIndex = "20";
+winScreen.style.textAlign = "center";
+
+// 動画（全画面）
+const winVideo = document.createElement("video");
+winVideo.src = "assets/videos/win.mp4";
+winVideo.style.position = "absolute";
+winVideo.style.top = "0";
+winVideo.style.left = "0";
+winVideo.style.width = "100%";
+winVideo.style.height = "100%";
+winVideo.style.objectFit = "cover";
+winVideo.autoplay = false;
+winVideo.controls = false;
+winVideo.muted = false;
+winScreen.appendChild(winVideo);
+
+// テキスト
+const winText = document.createElement("div");
+winText.textContent = "おめでとう！";
+winText.style.color = "white";
+winText.style.fontSize = "32px";
+winText.style.fontFamily = "monospace";
+// 例：画面中央の少し上に表示
+winText.style.position = "absolute";
+winText.style.top = "40%";      // 縦位置（パーセンテージでもpxでも可）
+winText.style.left = "50%";      // 横位置中央
+winText.style.transform = "translateX(-50%)"; // 横中央に寄せる
+winText.style.fontSize = "36px";  // サイズ調整
+winText.style.display = "none";   // 初期非表示
+winScreen.appendChild(winText);
+
+// もう一度遊ぶボタン
+const replayButton = document.createElement("button");
+replayButton.textContent = "もう一度遊ぶ";
+replayButton.classList.add("game-button");
+replayButton.id = "replay-button";
+replayButton.style.display = "none";
+replayButton.onclick = () => window.location.href = "index.html";
+winScreen.appendChild(replayButton);
+
+gameArea.appendChild(winScreen);
 
 // ========================
 // プレイヤー設定
@@ -78,8 +156,6 @@ gameArea.appendChild(gameOverScreen);
 let px = 100;
 let py = 100;
 const PLAYER_SPEED = 4;
-
-// 速度調整（スマホ用）
 const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
 let speedFactor = isMobile ? 0.25 : 1;
 
@@ -89,7 +165,6 @@ let speedFactor = isMobile ? 0.25 : 1;
 let ex = Math.random() * (gameArea.clientWidth - 40);
 let ey = Math.random() * (gameArea.clientHeight - 40);
 const ENEMY_SPEED = 3;
-
 let randX = 0;
 let randY = 0;
 let randTimer = 0;
@@ -98,11 +173,9 @@ enemy.style.left = ex + "px";
 enemy.style.top  = ey + "px";
 
 // ========================
-// 入力管理（WASD）
-const keys = {};
-
+// 入力管理
 // ========================
-// ゲーム開始フラグ（初回操作でスタート）
+const keys = {};
 let running = false;
 let gameStarted = false;
 
@@ -116,17 +189,10 @@ function startGame() {
   }
 }
 
-// キーボード
-window.addEventListener("keydown", e => {
-  keys[e.code] = true;
-  startGame();
-});
+window.addEventListener("keydown", e => { keys[e.code] = true; startGame(); });
 window.addEventListener("keyup", e => keys[e.code] = false);
 
-// ========================
-// スマホ操作（タッチ入力）
-let touchStartX = 0;
-let touchStartY = 0;
+let touchStartX = 0, touchStartY = 0;
 
 gameArea.addEventListener("touchstart", e => {
   const touch = e.touches[0];
@@ -160,42 +226,36 @@ gameArea.addEventListener("touchend", e => {
 
 // ========================
 // プレイヤー更新
+// ========================
 function updatePlayer() {
-  let vx = 0;
-  let vy = 0;
-
+  let vx = 0, vy = 0;
   if (keys["KeyW"]) vy -= 1;
   if (keys["KeyS"]) vy += 1;
   if (keys["KeyA"]) vx -= 1;
   if (keys["KeyD"]) vx += 1;
 
   const len = Math.hypot(vx, vy);
-  if (len !== 0) {
-    vx /= len;
-    vy /= len;
-  }
+  if (len !== 0) { vx /= len; vy /= len; }
 
   px += vx * PLAYER_SPEED * speedFactor;
   py += vy * PLAYER_SPEED * speedFactor;
 
-  px = Math.max(0, Math.min(px, gameArea.clientWidth  - player.offsetWidth));
+  px = Math.max(0, Math.min(px, gameArea.clientWidth - player.offsetWidth));
   py = Math.max(0, Math.min(py, gameArea.clientHeight - player.offsetHeight));
 
   player.style.left = px + "px";
-  player.style.top  = py + "px";
+  player.style.top = py + "px";
 }
 
 // ========================
-// 敵更新（追尾＋ランダム）
+// 敵更新
+// ========================
 function updateEnemy() {
   let dx = px - ex;
   let dy = py - ey;
   const dist = Math.hypot(dx, dy);
 
-  if (dist !== 0) {
-    dx /= dist;
-    dy /= dist;
-  }
+  if (dist !== 0) { dx /= dist; dy /= dist; }
 
   randTimer--;
   if (randTimer <= 0) {
@@ -207,7 +267,7 @@ function updateEnemy() {
   ex += (dx + randX) * ENEMY_SPEED;
   ey += (dy + randY) * ENEMY_SPEED;
 
-  ex = Math.max(0, Math.min(ex, gameArea.clientWidth  - enemy.offsetWidth));
+  ex = Math.max(0, Math.min(ex, gameArea.clientWidth - enemy.offsetWidth));
   ey = Math.max(0, Math.min(ey, gameArea.clientHeight - enemy.offsetHeight));
 
   enemy.style.left = ex + "px";
@@ -216,35 +276,42 @@ function updateEnemy() {
 
 // ========================
 // 当たり判定
+// ========================
 function checkCollision() {
   const pr = player.getBoundingClientRect();
   const er = enemy.getBoundingClientRect();
-  return !(
-    pr.right  < er.left ||
-    pr.left   > er.right ||
-    pr.bottom < er.top ||
-    pr.top    > er.bottom
-  );
+  return !(pr.right < er.left || pr.left > er.right || pr.bottom < er.top || pr.top > er.bottom);
 }
 
 // ========================
 // ゲーム終了処理
-function gameClear() {
-  running = false;
-  gameAudio.pause();
-  gameAudio.currentTime = 0;
-  alert("CLEAR!");
-}
-
+// ========================
 function gameOver() {
   running = false;
   gameAudio.pause();
   gameAudio.currentTime = 0;
   gameOverScreen.style.display = "flex";
+  retryButton.style.display = "block";
+}
+
+function gameClear() {
+  running = false;
+  gameAudio.pause();
+  gameAudio.currentTime = 0;
+  winScreen.style.display = "flex";
+  winVideo.currentTime = 0;
+  winVideo.style.display = "block";
+  winVideo.play().catch(() => {});
+  winVideo.onended = () => {
+    winVideo.style.display = "none"; // 動画非表示
+    winText.style.display = "block";
+    replayButton.style.display = "block";
+  };
 }
 
 // ========================
 // ゲームループ
+// ========================
 function loop(now = performance.now()) {
   if (!running) return;
 
@@ -272,7 +339,8 @@ function loop(now = performance.now()) {
 }
 
 // ========================
-// スマホジョイスティック対応（動作する）
+// スマホジョイスティック
+// ========================
 let joystick, stick, joyActive = false;
 let joyCenterX = 0, joyCenterY = 0, joyDx = 0, joyDy = 0;
 
@@ -338,7 +406,6 @@ if (isMobile) {
     stick.style.left = (joyCenterX + joyDx - 25) + "px";
     stick.style.top = (joyCenterY + joyDy - 25) + "px";
 
-    // 速度反映
     keys["KeyW"] = joyDy < -5;
     keys["KeyS"] = joyDy > 5;
     keys["KeyA"] = joyDx < -5;
