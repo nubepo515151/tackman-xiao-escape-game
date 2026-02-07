@@ -8,7 +8,7 @@ player.classList.add("debug");
 // ========================
 // タイマー設定
 // ========================
-const TIME_LIMIT = 3;
+const TIME_LIMIT = 30;
 let timeLeft = TIME_LIMIT;
 let lastTimeStamp = performance.now();
 
@@ -423,6 +423,7 @@ if (isMobile) {
     keys["KeyD"] = joyDx > 5;
   }
 }
+
 
 
 
